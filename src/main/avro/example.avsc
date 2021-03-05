@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "example",
+  "namespace": "br.com.sismico.avro",
+  "fields": [
+    {
+      "name": "username",
+      "type": "string"
+    },
+    {
+      "name": "email",
+      "type": "string"
+    }
+  ]
+}
