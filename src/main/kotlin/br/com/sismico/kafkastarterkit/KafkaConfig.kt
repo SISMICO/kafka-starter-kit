@@ -1,10 +1,10 @@
 package br.com.sismico.kafkastarterkit
 
-import br.com.sismico.kafkastarterkit.message.AvroSerializer
+import br.com.sismico.kafkastarterkit.entity.User
+import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
-import org.apache.kafka.common.serialization.ByteArraySerializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.context.annotation.Bean
@@ -31,10 +31,10 @@ class KafkaConfig {
 
     @Bean
     fun producerFactory(): ProducerFactory<String, String> {
-        val configProps: MutableMap<String, Any> = HashMap()
+        val configProps: MutableMap<String?, Any> = HashMap()
         configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = AvroSerializer::class.java
+        configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         configProps[ProducerConfig.ACKS_CONFIG] = "all";
         configProps[ProducerConfig.CLIENT_ID_CONFIG] = "cid1";
         configProps["sasl.jaas.config"] = prodJaasCfg;
@@ -47,12 +47,12 @@ class KafkaConfig {
     }
 
     @Bean
-    fun consumerFactory(): ConsumerFactory<String?, String?>? {
+    fun consumerFactory(): ConsumerFactory<String, String> {
         val props: MutableMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
         props[ConsumerConfig.GROUP_ID_CONFIG] = "kafka-test"
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = ByteArrayDeserializer::class.java
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest";
         props["sasl.jaas.config"] = prodJaasCfg;
         props["security.protocol"] = SASL_PROTOCOL;
