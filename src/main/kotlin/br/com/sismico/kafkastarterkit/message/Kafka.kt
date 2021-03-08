@@ -1,38 +1,28 @@
 package br.com.sismico.kafkastarterkit.message
 
-import br.com.sismico.kafkastarterkit.entity.User
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.util.StdDateFormat
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import br.com.sismico.avro.ExampleMessage
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
 @Component
-class Kafka (
-        private val template: KafkaTemplate<String, String>
-        ) {
+class Kafka(
+        private val template: KafkaTemplate<String, ExampleMessage>
+) {
     private val topic = "topic"
 
-    fun sendMessage(message: String) {
-        val jsonMapper = ObjectMapper().apply {
-            registerKotlinModule()
-            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            setDateFormat(StdDateFormat())
+    fun sendMessage(name: String, email: String) {
+        val avro = ExampleMessage().apply {
+            setUsername(name)
+            setEmail(email)
         }
-        template.send(topic, jsonMapper.writeValueAsString(User(nane = message)))
+        template.send(topic, avro)
     }
 
     @KafkaListener(topics = ["topic"], groupId = "kafka-test")
-    fun getMessage(message: String) {
-        val jsonMapper = ObjectMapper().apply {
-            registerKotlinModule()
-            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            setDateFormat(StdDateFormat())
-        }
-        val user = jsonMapper.readValue(message, User::class.java)
-
-        println(user.nane)
+    fun getMessage(message: ConsumerRecord<String, ExampleMessage>) {
+        var example = message.value()
+        println("Name: ${example.getUsername()}\n EMail: ${example.getEmail()}")
     }
 }

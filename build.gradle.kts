@@ -37,7 +37,7 @@ dependencies {
     implementation("io.confluent:kafka-streams-avro-serde:6.1.0")
     implementation("io.confluent:kafka-avro-serializer:5.2.1")
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    //developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }

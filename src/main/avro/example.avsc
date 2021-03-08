@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "example",
+  "name": "ExampleMessage",
   "namespace": "br.com.sismico.avro",
   "fields": [
     {
